@@ -1,6 +1,5 @@
 {
     "name": "skeeks/cms-log",
-    "version": "0.9.1",
     "description": "Протокол изменений",
     "keywords": [
         "module",
