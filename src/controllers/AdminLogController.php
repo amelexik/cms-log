@@ -13,6 +13,8 @@ use skeeks\cms\grid\DateTimeColumnData;
 use skeeks\cms\models\CmsContent;
 use skeeks\modules\cms\logCms\models\Log;
 use skeeks\yii2\form\fields\SelectField;
+use yii\base\Exception;
+use yii\filters\AccessControl;
 use yii\helpers\ArrayHelper;
 
 class AdminLogController extends BackendModelStandartController
@@ -26,15 +28,40 @@ class AdminLogController extends BackendModelStandartController
         parent::init();
     }
 
+
+    public function behaviors()
+    {
+        return [
+            'access' => [
+                'class' => AccessControl::className(),
+                'rules' => [
+                    [
+                        'allow'         => true,
+                        'matchCallback' => function ($rule, $action) {
+                            if ($action->id == 'index') {
+                                //Creating and Assigning Privileges for the Root User
+                                return $this->isAllow;
+                            } else {
+                                echo json_encode(['success' => false, 'message' => \Yii::t('skeeks/logCms', 'In this module allow only action INDEX')]);
+                                \Yii::$app->end();
+                            }
+
+                        },
+                    ],
+                ],
+            ],
+        ];
+    }
+
     /**
      * @inheritdoc
      */
     public function actions()
     {
         $models = [];
-        if($m = \Yii::$app->logCms->getLogModels()){
-            foreach ($m as $value){
-                $models[$value]=$value;
+        if ($m = \Yii::$app->logCms->getLogModels()) {
+            foreach ($m as $value) {
+                $models[$value] = $value;
             }
         }
         return ArrayHelper::merge(parent::actions(), [
@@ -58,6 +85,18 @@ class AdminLogController extends BackendModelStandartController
                                     'items' => \Yii::$app->logCms->getEvents()
                                 ],
                             ],
+                            'content_id'     => [
+                                'field' => [
+                                    'class' => SelectField::class,
+                                    'items' => \Yii::$app->logCms->getCmsContent()
+                                ],
+                            ],
+                            'user_name'      => [
+                                'field' => [
+                                    'class' => SelectField::class,
+                                    'items' => \Yii::$app->logCms->getUsers()
+                                ],
+                            ],
                         ],
                     ],
 
@@ -70,6 +109,7 @@ class AdminLogController extends BackendModelStandartController
                         'pk',
                         'name',
                         'model_class',
+                        'content_id',
                         'operation_type',
                         'created_at',
                         'user_name',
@@ -82,19 +122,37 @@ class AdminLogController extends BackendModelStandartController
                             ],
                         'operation_type' =>
                             [
-                                'class'         => \yii\grid\DataColumn::class,
-                                'label'         => \Yii::t('skeeks/logCms', 'Event'),
-                                'headerOptions' => ['style' => 'width:30%'],
-                                'value'         => function (Log $model) {
+                                'class'  => \yii\grid\DataColumn::class,
+                                'label'  => \Yii::t('skeeks/logCms', 'Event'),
+                                'value'  => function (Log $model) {
                                     return \Yii::$app->logCms->getEvents()[$model->operation_type];
                                 },
-                                'format'        => 'raw',
+                                'format' => 'raw',
+
+                            ],
+                        'content_id'     =>
+                            [
+                                'class'  => \yii\grid\DataColumn::class,
+                                'label'  => \Yii::t('skeeks/logCms', 'Content'),
+                                'value'  => function (Log $model) {
+                                    return isset(\Yii::$app->logCms->getCmsContent()[$model->content_id])
+                                        ? \Yii::$app->logCms->getCmsContent()[$model->content_id]
+                                        : '—';
+                                },
+                                'format' => 'raw',
 
                             ]
                     ],
                 ],
             ]
         ]);
+    }
+
+    public function beforeAction($action)
+    {
+        //if(!in_array($action->id,['index']))
+
+        return parent::beforeAction($action); // TODO: Change the autogenerated stub
     }
 }
 

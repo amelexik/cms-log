@@ -21,6 +21,7 @@ class m190315_094102_create_table__cmsLog extends Migration
             'id'             => $this->bigPrimaryKey(),
             'model_class'    => $this->string(500)->notNull(),
             'pk'             => $this->string()->notNull(),
+            'content_id'     => $this->integer(),
             'operation_type' => $this->smallInteger(1)->notNull() . ' COMMENT \'1-insert, 2-update, 3-delete\'',
             'created_at'     => $this->integer(10)->unsigned()->notNull(),
             'name'           => $this->string(150)->notNull(),
@@ -31,6 +32,8 @@ class m190315_094102_create_table__cmsLog extends Migration
             'data'           => $this->text()
         ], $tableOptions);
         $this->createIndex(self::TABLE . '_model_class_index', '{{%' . self::TABLE . '}}', 'model_class');
+        $this->createIndex(self::TABLE . '_user_name', '{{%' . self::TABLE . '}}', 'user_name');
+        $this->createIndex(self::TABLE . '_content_id', '{{%' . self::TABLE . '}}', 'content_id');
         $this->addForeignKey(
             self::TABLE . 'user_id', '{{%' . self::TABLE . '}}',
             'user_id', '{{%cms_user}}', 'id', 'SET NULL', 'SET NULL'

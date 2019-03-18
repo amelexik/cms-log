@@ -7,6 +7,8 @@
  */
 
 namespace skeeks\modules\cms\logCms;
+
+use skeeks\cms\models\CmsTree;
 use Yii;
 use yii\base\BootstrapInterface;
 use yii\base\Event;
@@ -52,12 +54,14 @@ class Bootstrap implements BootstrapInterface
 
 
         $name = isset($model->name) ? $model->name : $pk;
+        $content_id = isset($model->content_id) ? $model->content_id : null;
 
 
         Yii::$app->db->createCommand()
             ->insert('{{%cms_log}}', [
                 'model_class'    => $model::className(),
                 'pk'             => $pk,
+                'content_id'     => $content_id,
                 'operation_type' => $type,
                 'created_at'     => time(),
                 'name'           => $name,

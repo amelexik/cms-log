@@ -39,7 +39,7 @@ class Log extends \yii\db\ActiveRecord
     {
         return [
             [['model_class', 'pk', 'operation_type', 'created_at', 'name', 'user_name'], 'required'],
-            [['operation_type', 'created_at', 'user_id'], 'integer'],
+            [['operation_type', 'created_at', 'user_id', 'content_id'], 'integer'],
             [['data'], 'string'],
             [['model_class'], 'string', 'max' => 500],
             [['pk', 'user_name'], 'string', 'max' => 255],
@@ -67,6 +67,7 @@ class Log extends \yii\db\ActiveRecord
             'user_ip'        => \Yii::t('skeeks/logCms', 'Ip'),
             'user_agent'     => \Yii::t('skeeks/logCms', 'User Agent'),
             'data'           => \Yii::t('skeeks/logCms', 'Additional Data'),
+            'content_id'     => \Yii::t('skeeks/logCms', 'Content ID'),
         ];
     }
 
