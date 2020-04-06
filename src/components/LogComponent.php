@@ -7,6 +7,7 @@ use skeeks\cms\models\CmsContent;
 use skeeks\cms\models\CmsContentElement;
 use skeeks\cms\models\CmsUser;
 use skeeks\cms\models\Tree;
+use skeeks\modules\cms\logCms\assets\CmsLogAsset;
 use skeeks\modules\cms\logCms\models\Log;
 use yii\helpers\ArrayHelper;
 use yii\widgets\ActiveForm;
@@ -59,6 +60,9 @@ class LogComponent extends Component
     {
         return array_merge(parent::descriptorConfig(), [
             'name' => \Yii::t('skeeks/logCms', 'Cms changelog'),
+            'image' => [
+                CmsLogAsset::class, 'icons/log.png'
+            ],
         ]);
     }
 
@@ -101,11 +105,12 @@ class LogComponent extends Component
      * @param ActiveForm $form
      * @return string|void
      */
-    public function renderConfigForm(ActiveForm $form)
+    public function renderConfigFormFields(ActiveForm $form)
     {
-        echo $form->fieldSet(\Yii::t('skeeks/logCms', 'Setting'));
-        echo $form->field($this, 'availableModels')->textarea(['rows' => 20]);
-        echo $form->fieldSetEnd();
+        $result = $form->fieldSet(\Yii::t('skeeks/logCms', 'Setting'));
+        $result .= $form->field($this, 'availableModels')->textarea(['rows' => 20]);
+        $result .= $form->fieldSetEnd();
+        return $result;
     }
 
 

@@ -11,8 +11,8 @@ namespace skeeks\modules\cms\logCms\assets;
 use yii\web\AssetBundle;
 
 /**
- * Class CmsOfferAsset
- * @package skeeks\offer\assets
+ * Class CmsLogAsset
+ * @package skeeks\logCms\assets
  */
 class CmsLogAsset extends AssetBundle
 {
